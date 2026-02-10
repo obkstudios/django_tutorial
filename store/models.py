@@ -1,8 +1,14 @@
 from django.db import models
 
-# Create your models here.
+class Promotion(models.Models):
+    description = models.CharField(max_length=255)
+    discount = models.FloatField()
+
+
 class Collection(models.Model):
     title = models.CharField(max_length=255)
+    featured_product = models.ForeignKey('Product', on_delete=models.SET_NULL, related_name='+')
+
 
 class Product(models.Model):
     title = models.CharField(max_length=255) 
@@ -11,6 +17,7 @@ class Product(models.Model):
     inventory = models.IntegerField()
     last_update = models.DateTimeField(auto_now=True)
     collection = models.ForeignKey(Collection, on_delete=models.PROTECT)
+    promotions = models.ManyToManyField(Promotion) 
 
 class Customer(models.Model):
     MEMBERSHIP_BRONZE = 'B' 
@@ -28,8 +35,9 @@ class Customer(models.Model):
     email = models.EmailField(unique=True) # emailfield
     phone = models.CharField(max_length=255) 
     birth_date = models.DateField(null=True) # datefield
-    customer = models.CharField(max_length=we are going to shool in )
+    customer = models.CharField(max_length=255)
     membership = models.CharField(max_length=1, choices=MEMBERSHIP_CHOICES)
+
 
 class Order(models.Model):
     PAYMENT_PENDING = 'P'
@@ -46,9 +54,26 @@ class Order(models.Model):
     customer = models.ForeignKey(Customer, on_delete=models.PROTECT)
 
 
-class OrderItem
+class OrderItem():
+    order = models.ForeignKey(Order, on_delete=models.PROTECT)
+    product = models.ForeignKey(Product, on_delete=models.PROTECT)
+    quantity = models.PositiveSmallIntegerField()
+    unit_price = models.DecimalField(max_digits=6, decimal_places=2)
 
-class CartItem
-    
+
+class Address(models.Models):
+    street = models.CharField(max_length=255)
+    city = models.CharField(max_length=255)
+    customer = models.ForeignKey(Customer, on_delete=models.CASCADE)
+
+
+class Cart(models.Models):
+    created_at = models.DateTimeField(auto_now_add=True)
+
+
+class CartItem():
+    cart = models.ForeignKey(Cart, on_delete=models.CASCADE)
+    product = models.ForeignKey(Product, on_delete=models.CASCADE)
+    quantity = models.PositiveSmallIntegerField()
 
  
