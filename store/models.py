@@ -7,13 +7,14 @@ class Promotion(models.Model):
 
 class Collection(models.Model):
     title = models.CharField(max_length=255)
-    featured_product = models.ForeignKey('Product', on_delete=models.SET_NULL, related_name='+')
+    featured_product = models.ForeignKey('Product', on_delete=models.SET_NULL, null=True, related_name='+')
 
 
 class Product(models.Model):
     title = models.CharField(max_length=255) 
     descriptions = models.TextField()
-    price = models.DecimalField(max_digits=6, decimal_places=2)
+    slug = models.SlugField()
+    unit_price = models.DecimalField(max_digits=6, decimal_places=2)
     inventory = models.IntegerField()
     last_update = models.DateTimeField(auto_now=True)
     collection = models.ForeignKey(Collection, on_delete=models.PROTECT)
@@ -25,9 +26,9 @@ class Customer(models.Model):
     MEMBERSHIP_GOLD = 'G'
 
     MEMBERSHIP_CHOICES = [
-        ('MEMBERSHIP_BRONZE', 'Bronze'),
-        ('MEMBERSHIP_SILVER', 'Silver'),
-        ('MEMBERSHIP_GOLD', 'Gold')
+        (MEMBERSHIP_BRONZE, 'Bronze'),
+        (MEMBERSHIP_SILVER, 'Silver'),
+        (MEMBERSHIP_GOLD, 'Gold')
     ]
 
     first_name = models.CharField(max_length=255)
@@ -35,8 +36,7 @@ class Customer(models.Model):
     email = models.EmailField(unique=True) # emailfield
     phone = models.CharField(max_length=255) 
     birth_date = models.DateField(null=True) # datefield
-    customer = models.CharField(max_length=255)
-    membership = models.CharField(max_length=1, choices=MEMBERSHIP_CHOICES)
+    membership = models.CharField(max_length=255, choices=MEMBERSHIP_CHOICES)
 
 
 class Order(models.Model):
@@ -45,12 +45,12 @@ class Order(models.Model):
     PAYMENT_FAILED = 'F'
 
     PAYMENT_CHOICES = [
-        ('PAYMENT_PENDING', 'P'),
-        ('PAYMENT_COMPLETE', 'C'),
-        ('PAYMENT_FAILED', 'F')
+        (PAYMENT_PENDING, 'P'),
+        (PAYMENT_COMPLETE, 'C'),
+        (PAYMENT_FAILED, 'F')
     ]
     placed_at = models.DateTimeField(auto_now_add=True)
-    payment_status = models.CharField(max_length=1, choices=PAYMENT_CHOICES, default=PAYMENT_PENDING)
+    payment_status = models.CharField(max_length=50, choices=PAYMENT_CHOICES, default=PAYMENT_PENDING)
     customer = models.ForeignKey(Customer, on_delete=models.PROTECT)
 
 
